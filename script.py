@@ -22,7 +22,7 @@ tNum = options.trialNum
 LMSetSize = 50
 
 # test all nodes
-nSamps = 0
+# nSamps = 0
 
 # get input graph as a networkx graph
 G = nx.read_adjlist(options.infile)
@@ -30,8 +30,10 @@ G = nx.read_adjlist(options.infile)
 # remove selfloop edges
 G.remove_edges_from(G.selfloop_edges())
 
-# make connected if not so
-dsd.make_connected(G)
+# we can only work with a connected graph
+# DONT Do this: dsd.make_connected(G)
+# instead, select the largest connected component
+G = sorted(nx.connected_component_subgraphs(G), key=len, reverse=True)[0]
 
 # capture canonical node order
 nodeList = G.nodes()
@@ -50,14 +52,16 @@ degDescending = degAscending[::-1]
 LMset = degDescending[0:LMSetSize]
 
 # make sure sample set and landmark set don't have nodes in common
-nonLMset = [i for i in xrange(n) if i not in LMset]
-if (nSamps != 0):
-    sampleSet = random.sample(nonLMset,nSamps)
-else:
-    # modified for testing ALL nodes
-    sampleSet = nonLMset
-    nSamps = len(sampleSet)
-#
+# put this back in if/when we are doing cross-species because matching landmarks is misleading
+# nonLMset = [i for i in xrange(n) if i not in LMset]
+# if (nSamps != 0):
+#    sampleSet = random.sample(nonLMset,nSamps)
+# else:
+
+# modified for testing ALL nodes
+# not using this right now
+# sampleSet = nodeList
+# nSamps = len(sampleSet)
 #
 # construct hemat
 #
