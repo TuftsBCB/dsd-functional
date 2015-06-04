@@ -147,7 +147,8 @@ def allRowNorms(mat1, mat2, normFn, LMset=-1, nodeset=-1):
     # if nodeset is not specified, compute for all nodes
     if (np.size(nodeset)==1 and nodeset == -1):
         nodeset = range(0,n)
-        nNodes = np.size(nodeset)
+
+    nNodes = np.size(nodeset)
 
     h1 = mat1[nodeset][:,LMset]
     h2 = mat2[nodeset][:,LMset]
