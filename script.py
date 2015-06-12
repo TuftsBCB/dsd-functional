@@ -13,7 +13,12 @@ def announce(str):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("infile")
-parser.add_argument("trialNum",type=int)
+parser.add_argument("trialNum", type=int)
+
+# optional: specify npy files containing DSD and overlap matrices previously computed
+parser.add_argument("--dsdMat")
+parser.add_argument("--overlapMat")
+
 options = parser.parse_args()
 
 tNum = options.trialNum
@@ -62,18 +67,28 @@ LMset = degDescending[0:LMSetSize]
 # not using this right now
 # sampleSet = nodeList
 # nSamps = len(sampleSet)
-#
-# construct hemat
-#
-HEmatrix = dsd.hematrix(np.array(nx.adjacency_matrix(G,nodeList).todense()))
 
-# construct DSD
-D = dsd.DSD(HEmatrix,LMset)
 
-# get list of nodes in LMSet
-LMnodes = [nodeList[index] for index in LMset]
+if not options.dsdMat:
+    #
+    # construct hemat
+    #
+    HEmatrix = dsd.hematrix(np.array(nx.adjacency_matrix(G,nodeList).todense()))
 
-def GOToDict(LMnodes, GOfile):
+    # construct DSD
+    D = dsd.DSD(HEmatrix,LMset)
+
+    npyOutfile = raw_input("DSD matrix computed. Enter file path to save matrix for future use, "
+                           "or just press Enter to continue without saving:")
+    if not npyOutfile:
+        print "fine, be that way!"
+    else:
+        np.save(npyOutfile, D)
+else:
+    D = np.load(options.dsdMat)
+
+
+def GOToDict(nodeList, GOfile):
     """
     given set of nodes and name of GO file,
     return dictionary with node(gene id) as key, list of labels as value
@@ -88,44 +103,43 @@ def GOToDict(LMnodes, GOfile):
                 continue
             part = line.strip().split('\t', 1)
 
-            # if gene id in our landmark set, add labels to dict
             # if no label, add empty list
-            if part[0] not in LMnodes:
-                continue
             if len(part) == 2:
                 labels = part[1].split('; ')
             else:
                 labels = []
             node_labels[part[0]] = labels
 
-    # if node not found in GO file, consider it as having no labels
-    for node in LMnodes:
-        if node not in node_labels:
-            node_labels[node] = []
+            # consider any node not listed in GO file as having no labels
+            for node in nodeList:
+                if node not in node_labels:
+                    node_labels[node] = []
 
     return node_labels
 
 # assuming GOfile is in same directory as ppi file, replace .ppi extension with NCBI_to_GO
 GOfile = options.infile[:-4]
 GOfile += "_NCBI_to_GO"
-node_labels = GOToDict(LMnodes, GOfile)
+node_labels = GOToDict(nodeList, GOfile)
 
-#for node in node_labels:
-#    print "{}: ".format(node), node_labels[node]
+if not options.overlapMat:
+    # construct K = overlap matrix
+    K = np.zeros((n, n), dtype=int)
 
-# construct K = overlap matrix
-num_nodes = len(node_labels)
-K = np.zeros((num_nodes, num_nodes), dtype=int)
-
-# if there is function overlap, set K[ij] and K[ji] to 1
-for i in xrange(1,num_nodes):
-    nd = LMnodes[i]
-    for j in xrange(i+1,num_nodes):
-        for label in node_labels[nd]:
-            if label in node_labels[LMnodes[j]]:
-                K[i][j] = 1
-                K[j][i] = 1
-                break
-
-for i in range(num_nodes):
-    print K[i]
+    # if there is function overlap, set K[ij] to 1
+    for i in range(1,n):
+        nd = nodeList[i]
+        for j in range(i+1,n):
+            for label in node_labels[nd]:
+                if label in node_labels[nodeList[j]]:
+                    K[i][j] = 1
+                    K[j][i] = 1
+                    break
+    npyOutfile = raw_input("overlap matrix computed. Enter file path to save matrix for future use, "
+                           "or just press Enter to continue without saving:")
+    if not npyOutfile:
+        print "fine, be that way!"
+    else:
+        np.save(npyOutfile, K)
+else:
+    K = np.load(options.overlapMat)
