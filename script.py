@@ -2,6 +2,7 @@ import numpy as np
 import argparse
 import random
 import matplotlib as mp
+from matplotlib import pyplot as plt
 import sys
 import dsd
 import networkx as nx
@@ -143,3 +144,30 @@ if not options.overlapMat:
         np.save(npyOutfile, K)
 else:
     K = np.load(options.overlapMat)
+
+
+#
+# Code for initial plot
+#
+
+# flatten D and K, sort by distance in increasing order
+DFlat = np.ravel(D)
+DSorted = np.argsort(DFlat)
+
+KFlat = np.ravel(K)
+numPairs = len(DSorted)
+# list of (summed overlap):(number of pairs) ratios
+overlapRatios = np.zeros(numPairs)
+overlapSum = 0.0
+for n in range(numPairs):
+    index = DSorted[n]
+    overlapSum += KFlat[index]
+    overlapRatios[n] = overlapSum/(n+1)
+
+# dsd distances in increasing order
+distances = [DFlat[k] for k in DSorted]
+
+plt.plot(distances, overlapRatios)
+plt.xlabel("DSD")
+plt.ylabel("Cumulative function overlap")
+plt.show()
