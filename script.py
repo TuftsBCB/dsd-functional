@@ -118,6 +118,9 @@ def GOToDict(nodeList, GOfile):
 
     return node_labels
 
+def setOverlap(set1, set2):
+    return not set1.isdisjoint(set2)
+
 # assuming GOfile is in same directory as ppi file, replace .ppi extension with NCBI_to_GO
 GOfile = options.infile[:-4]
 GOfile += "_NCBI_to_GO"
@@ -128,14 +131,10 @@ if not options.overlapMat:
     K = np.zeros((n, n), dtype=int)
 
     # if there is function overlap, set K[ij] to 1
-    for i in range(1,n):
-        nd = nodeList[i]
-        for j in range(i+1,n):
-            for label in node_labels[nd]:
-                if label in node_labels[nodeList[j]]:
-                    K[i][j] = 1
-                    K[j][i] = 1
-                    break
+    for i in xrange(n):
+        for j in xrange(i+1,n):
+            K[i][j] = K[j][i] = setOverlap(set(nodelist[i]), set(nodelist[j]))
+
     npyOutfile = raw_input("overlap matrix computed. Enter file path to save matrix for future use, "
                            "or just press Enter to continue without saving:")
     if not npyOutfile:
