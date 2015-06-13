@@ -92,7 +92,7 @@ def GOToDict(nodeList, GOfile):
     given set of nodes and name of GO file,
     return dictionary with node(gene id) as key, list of labels as value
     """
-    node_labels = {}
+    nodeLabels = {}
 
     with open(GOfile) as f:
         for line in f:
@@ -107,14 +107,14 @@ def GOToDict(nodeList, GOfile):
                 labels = part[1].split('; ')
             else:
                 labels = []
-            node_labels[part[0]] = labels
+            nodeLabels[part[0]] = labels
 
             # consider any node not listed in GO file as having no labels
             for node in nodeList:
-                if node not in node_labels:
-                    node_labels[node] = []
+                if node not in nodeLabels:
+                    nodeLabels[node] = []
 
-    return node_labels
+    return nodeLabels
 
 def setOverlap(set1, set2):
     return not set1.isdisjoint(set2)
@@ -122,7 +122,7 @@ def setOverlap(set1, set2):
 # assuming GOfile is in same directory as ppi file, replace .ppi extension with NCBI_to_GO
 GOfile = options.infile[:-4]
 GOfile += "_NCBI_to_GO"
-node_labels = GOToDict(nodeList, GOfile)
+nodeLabels = GOToDict(nodeList, GOfile)
 
 # if npy path not entered, or file does not exist, compute K
 if not options.overlapMat or not os.path.isfile(options.overlapMat):
@@ -132,13 +132,12 @@ if not options.overlapMat or not os.path.isfile(options.overlapMat):
     # if there is function overlap, set K[ij] to 1
     for i in xrange(n):
         for j in xrange(i+1,n):
-            K[i][j] = K[j][i] = setOverlap(set(nodeList[i]), set(nodeList[j]))
+            K[i][j] = K[j][i] = setOverlap(set(nodeLabels[nodeList[i]]), set(nodeLabels[nodeList[j]]))
 
     if options.overlapMat:
         np.save(options.overlapMat, K)
 else:
     K = np.load(options.overlapMat)
-
 
 #
 # Code for initial plot
