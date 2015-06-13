@@ -7,6 +7,7 @@ import sys
 import dsd
 import networkx as nx
 import time
+import os.path
 
 def announce(str):
     print time.strftime('%H:%M'),str
@@ -17,6 +18,7 @@ parser.add_argument("infile")
 parser.add_argument("trialNum", type=int)
 
 # optional: specify npy files containing DSD and overlap matrices previously computed
+# if files do not exist, compute matrices and save them to file
 parser.add_argument("--dsdMat")
 parser.add_argument("--overlapMat")
 
@@ -69,8 +71,8 @@ LMset = degDescending[0:LMSetSize]
 # sampleSet = nodeList
 # nSamps = len(sampleSet)
 
-
-if not options.dsdMat:
+# if npy path not entered, or file does not exist, compute D
+if not options.dsdMat or not os.path.isfile(options.dsdMat):
     #
     # construct hemat
     #
@@ -79,12 +81,8 @@ if not options.dsdMat:
     # construct DSD
     D = dsd.DSD(HEmatrix,LMset)
 
-    npyOutfile = raw_input("DSD matrix computed. Enter file path to save matrix for future use, "
-                           "or just press Enter to continue without saving:")
-    if not npyOutfile:
-        print "fine, be that way!"
-    else:
-        np.save(npyOutfile, D)
+    if options.dsdMat:
+        np.save(options.dsdMat, D)
 else:
     D = np.load(options.dsdMat)
 
@@ -126,21 +124,18 @@ GOfile = options.infile[:-4]
 GOfile += "_NCBI_to_GO"
 node_labels = GOToDict(nodeList, GOfile)
 
-if not options.overlapMat:
+# if npy path not entered, or file does not exist, compute K
+if not options.overlapMat or not os.path.isfile(options.overlapMat):
     # construct K = overlap matrix
     K = np.zeros((n, n), dtype=int)
 
     # if there is function overlap, set K[ij] to 1
     for i in xrange(n):
         for j in xrange(i+1,n):
-            K[i][j] = K[j][i] = setOverlap(set(nodelist[i]), set(nodelist[j]))
+            K[i][j] = K[j][i] = setOverlap(set(nodeList[i]), set(nodeList[j]))
 
-    npyOutfile = raw_input("overlap matrix computed. Enter file path to save matrix for future use, "
-                           "or just press Enter to continue without saving:")
-    if not npyOutfile:
-        print "fine, be that way!"
-    else:
-        np.save(npyOutfile, K)
+    if options.overlapMat:
+        np.save(options.overlapMat, K)
 else:
     K = np.load(options.overlapMat)
 
