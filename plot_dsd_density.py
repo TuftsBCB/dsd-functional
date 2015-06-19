@@ -54,4 +54,12 @@ distances = [DFlat[k] for k in DSorted]
 plt.plot(distances, overlapRatios)
 plt.xlabel("DSD")
 plt.ylabel("Density of function overlap")
-plt.show()
+
+# get organism name from GOfile
+outfile = GOfile[:-11].split('\\')
+outfile = outfile[-1]
+
+outfile = "plots\\" + outfile + "_dsd_density"
+
+print "saving plot.."
+plt.savefig(outfile)

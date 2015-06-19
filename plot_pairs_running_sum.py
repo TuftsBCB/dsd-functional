@@ -50,6 +50,15 @@ for n in range(numPairs):
 
 # make another file to plot numpairs
 plt.plot(range(numPairs), overlapRSum)
+plt.plot([0, numPairs], [overlapRSum[0], overlapRSum[-1]], "k--")
 plt.xlabel("Protein pairs")
 plt.ylabel("Running sum of function overlap")
-plt.show()
+
+# get organism name from GOfile
+outfile = GOfile[:-11].split('\\')
+outfile = outfile[-1]
+
+outfile = "plots\\" + outfile + "_pairs_running_sum"
+
+print "saving plot.."
+plt.savefig(outfile)

@@ -45,4 +45,12 @@ distances = [DFlat[k] for k in DSorted]
 plt.plot(distances, range(numPairs))
 plt.xlabel("DSD")
 plt.ylabel("Running sum of protein pairs")
-plt.show()
+
+# get organism name from GOfile
+outfile = GOfile[:-11].split('\\')
+outfile = outfile[-1]
+
+outfile = "plots\\" + outfile + "_dsd_pairs"
+
+print "saving plot.."
+plt.savefig(outfile)
