@@ -10,6 +10,9 @@ parser.add_argument("infile")
 # if file does not exist, compute matrix and save to file
 parser.add_argument("--dsdMat")
 
+# if specified, write LaTeX code into file as text
+parser.add_argument("--texOutfile")
+
 # not using these atm
 # parser.add_argument("trialNum", type=int)
 # tNum = options.trialNum
@@ -50,7 +53,15 @@ plt.ylabel("Running sum of protein pairs")
 outfile = GOfile[:-11].split('\\')
 outfile = outfile[-1]
 
-outfile = "plots\\" + outfile + "_dsd_pairs"
+outfile = "plots/" + outfile + "_dsd_pairs"
 
 print "saving plot.."
 plt.savefig(outfile)
+
+# append code to file -- assume there is already existing code that we dont want to overwrite
+if options.texOutfile:
+    with open(options.texOutfile, "a") as f:
+        f.write("%DSD vs Pairs Plot:%\n")
+        f.write("\\subfloat[DSD vs Pairs]{\n"
+                "\\includegraphics[width=0.5\\textwidth]{" + outfile + ".png}\n"
+                "}\n \n")
