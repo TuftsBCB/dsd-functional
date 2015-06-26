@@ -11,7 +11,7 @@ import time
 import os.path
 
 
-def setupGraph(infile):
+def setup_graph(infile):
     """
     creates networkx graph and does necessary processing
     in order to generate matrices or do further work.
@@ -31,7 +31,7 @@ def setupGraph(infile):
     return G
 
 
-def getLMSet(G, nodeList, LMSetSize):
+def get_LMset(G, nodeList, LMSetSize):
     """
     given a graph, its corresponding nodelist and LM set size, computes and returns LM set.
     """
@@ -47,7 +47,7 @@ def getLMSet(G, nodeList, LMSetSize):
     return degDescending[0:LMSetSize]
 
 
-def getDSD(G, nodeList, LMset, npyFile):
+def dsd_matrix(G, nodeList, LMset, npyFile):
     # if npy path not entered, or file does not exist, compute D
     if not npyFile or not os.path.isfile(npyFile):
         #
@@ -67,7 +67,7 @@ def getDSD(G, nodeList, LMset, npyFile):
     return D
 
 
-def GOToDict(nodeList, GOfile):
+def GO_to_dict(nodeList, GOfile):
     """
     given set of nodes and name of GO file,
     return dictionary with node(gene id) as key, list of labels as value
@@ -97,11 +97,11 @@ def GOToDict(nodeList, GOfile):
     return nodeLabels
 
 
-def setOverlap(set1, set2):
+def set_overlap(set1, set2):
     return not set1.isdisjoint(set2)
 
 
-def overlapMatrix(nodeList, GOfile, npyFile):
+def overlap_matrix(nodeList, GOfile, npyFile):
     """
     given list of nodes and path to GO file(with labels),
     construct overlap matrix
@@ -111,12 +111,12 @@ def overlapMatrix(nodeList, GOfile, npyFile):
         n = len(nodeList)
         # construct K = overlap matrix, dictionary of node:labels
         K = np.zeros((n, n), dtype=int)
-        nodeLabels = GOToDict(nodeList, GOfile)
+        nodeLabels = GO_to_dict(nodeList, GOfile)
 
         # if there is function overlap, set K[ij] to 1
         for i in xrange(n):
             for j in xrange(i+1,n):
-                K[i][j] = K[j][i] = setOverlap(set(nodeLabels[nodeList[i]]), set(nodeLabels[nodeList[j]]))
+                K[i][j] = K[j][i] = set_overlap(set(nodeLabels[nodeList[i]]), set(nodeLabels[nodeList[j]]))
 
         if npyFile:
             np.save(npyFile, K)
