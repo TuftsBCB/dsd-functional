@@ -101,24 +101,29 @@ def set_overlap(set1, set2):
     return not set1.isdisjoint(set2)
 
 
-def overlap_matrix(nodeList, GOfile, npyFile):
+def overlap_matrix(nodeList, GOfile, npyFile, randomize=False):
     """
     given list of nodes and path to GO file(with labels),
     construct overlap matrix
+    also added option to randomly shuffle label sets for comparison
     """
     # if npy path not entered, or file does not exist, compute K
-    if not npyFile or not os.path.isfile(npyFile):
+    # if randomizing, DON'T LOAD and DON'T SAVE
+    if not npyFile or not os.path.isfile(npyFile) or randomize:
         n = len(nodeList)
         # construct K = overlap matrix, dictionary of node:labels
         K = np.zeros((n, n), dtype=int)
         nodeLabels = GO_to_dict(nodeList, GOfile)
+
+        if randomize:
+            nodeLabels = dict(zip(np.random.permutation(nodeLabels.keys()), nodeLabels.values()))
 
         # if there is function overlap, set K[ij] to 1
         for i in xrange(n):
             for j in xrange(i+1,n):
                 K[i][j] = K[j][i] = set_overlap(set(nodeLabels[nodeList[i]]), set(nodeLabels[nodeList[j]]))
 
-        if npyFile:
+        if npyFile and not randomize:
             np.save(npyFile, K)
     else:
         K = np.load(npyFile)

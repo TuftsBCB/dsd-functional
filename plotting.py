@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None):
+def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None, randomize=False):
     """
     plots dsd against (normalized):
         1. summed overlap
@@ -26,7 +26,11 @@ def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None):
     LMSet = expt.get_LMset(G, nodeList, LMSetSize)
 
     D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
-    K = expt.overlap_matrix(nodeList, GOfile, overlapMat)
+    # if randomize:
+    #     K = np.random.random_integers(0, 1, np.shape(D))
+    #     K = (K + np.transpose(K)) / 2
+    # else:
+    K = expt.overlap_matrix(nodeList, GOfile, overlapMat, randomize=randomize)
 
     # flatten D and K, sort by distance in increasing order
     DFlat = np.ravel(D)
@@ -53,7 +57,7 @@ def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None):
     plt.legend()
 
 
-def pairs_summed_overlap(infile, dsdMat=None, overlapMat=None):
+def pairs_summed_overlap(infile, dsdMat=None, overlapMat=None, randomize=False):
     """
     plots pairs against running sum of overlap
     """
@@ -72,7 +76,7 @@ def pairs_summed_overlap(infile, dsdMat=None, overlapMat=None):
     LMSet = expt.get_LMset(G, nodeList, LMSetSize)
 
     D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
-    K = expt.overlap_matrix(nodeList, GOfile, overlapMat)
+    K = expt.overlap_matrix(nodeList, GOfile, overlapMat, randomize=randomize)
 
     # flatten D and K, sort by distance in increasing order
     DFlat = np.ravel(D)
@@ -94,7 +98,7 @@ def pairs_summed_overlap(infile, dsdMat=None, overlapMat=None):
     plt.ylabel("Running sum of function overlap")
 
 
-def dsd_density(infile, dsdMat=None, overlapMat=None):
+def dsd_density(infile, dsdMat=None, overlapMat=None, randomize=False):
     """
     plots dsd against overlap density
     """
@@ -113,7 +117,7 @@ def dsd_density(infile, dsdMat=None, overlapMat=None):
     LMSet = expt.get_LMset(G, nodeList, LMSetSize)
 
     D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
-    K = expt.overlap_matrix(nodeList, GOfile, overlapMat)
+    K = expt.overlap_matrix(nodeList, GOfile, overlapMat, randomize=randomize)
 
     # flatten D and K, sort by distance in increasing order
     DFlat = np.ravel(D)
@@ -136,8 +140,4 @@ def dsd_density(infile, dsdMat=None, overlapMat=None):
     plt.xlabel("DSD")
     plt.ylabel("Density of function overlap")
 
-
-#plt.figure(1)
-#dsd_density("PPIs and GO/rat.ppi", "NumPy files/rat_dsd.npy", "NumPy files/rat.overlap.npy")
-#plt.show()
 

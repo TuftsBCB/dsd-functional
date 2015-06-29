@@ -2,6 +2,8 @@
 # generates plots using routines from plotting.py, saves them,
 # and generates the corresponding LaTeX markup
 # LaTeX packages used: graphicx, float, subfig, geometry(margins set to .75in)
+# run in command line with something like:
+# python generate_report.py "PPIs and GO" "rat mouse" "tex.txt"
 
 import plotting
 import argparse
@@ -51,8 +53,8 @@ with open(options.outfile, "a") as f:
         infile = options.directory + "/" + organism + ppiExt
         npyPath = npyDir + "/" + organism
         f.write("\\section{" + organism + "}\n")
-        f.write("\\begin{figure}[H]\n\\centerline{\n")
 
+        f.write("\\begin{figure}[H]\n\\centerline{\n")
         #################
         # dsd : density #
         #################
@@ -101,4 +103,57 @@ with open(options.outfile, "a") as f:
         f.write("{" + figFile + "}\n}\n")
         figNum += 1
         f.write("}\n\\end{figure}\n\n")
+
+        # RANDOMIZE
+        f.write("\\subsection{Plots based on randomly permutation of label sets}\n")
+        f.write("\\begin{figure}[H]\n\\centerline{\n")
+        #################
+        # dsd : density #
+        #################
+        f.write("\\subfloat[DSD vs Density]{\n")
+        plt.figure(figNum)
+        plotting.dsd_density(infile, npyPath + "_dsd.npy", npyPath + "_overlap.npy", randomize=True)
+
+        # save plot
+        figFile = plotsDir + "/" + organism + "_dsd_density_randomized"
+        plt.savefig(figFile)
+        figFile += ".png"
+
+        f.write("\\includegraphics[width=" + width + "\\textwidth]")
+        f.write("{" + figFile + "}\n}\n")
+        figNum += 1
+
+        ########################
+        # dsd : pairs, overlap #
+        ########################
+        f.write("\\subfloat[DSD vs Overlap, Pairs]{\n")
+        plt.figure(figNum)
+        plotting.dsd_overlap_pairs(infile, npyPath + "_dsd.npy", npyPath + "_overlap.npy", randomize=True)
+
+        # save plot
+        figFile = plotsDir + "/" + organism + "_dsd_overlap_pairs_randomized"
+        plt.savefig(figFile)
+        figFile += ".png"
+
+        f.write("\\includegraphics[width=" + width + "\\textwidth]")
+        f.write("{" + figFile + "}\n}\n")
+        figNum += 1
+
+        ##############################
+        # pairs : cumulative overlap #
+        ##############################
+        f.write("\\subfloat[Pairs vs Cumulative Overlap]{\n")
+        plt.figure(figNum)
+        plotting.pairs_summed_overlap(infile, npyPath + "_dsd.npy", npyPath + "_overlap.npy", randomize=True)
+
+        # save plot
+        figFile = plotsDir + "/" + organism + "_pairs_overlap_randomized"
+        plt.savefig(figFile)
+        figFile += ".png"
+
+        f.write("\\includegraphics[width=" + width + "\\textwidth]")
+        f.write("{" + figFile + "}\n}\n")
+        figNum += 1
+        f.write("}\n\\end{figure}\n\n")
+
         print("done!")
