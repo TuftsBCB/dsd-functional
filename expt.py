@@ -113,7 +113,9 @@ def overlap_matrix(nodeList, GOfile, npyFile, randomize=False):
         n = len(nodeList)
         # construct K = overlap matrix, dictionary of node:labels
         K = np.zeros((n, n), dtype=int)
+        # get dictionary and reconstruct to only include nodes in nodeList
         nodeLabels = GO_to_dict(nodeList, GOfile)
+        nodeLabels = {key: nodeLabels[key] for key in nodeList}
 
         if randomize:
             nodeLabels = dict(zip(np.random.permutation(nodeLabels.keys()), nodeLabels.values()))

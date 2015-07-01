@@ -140,4 +140,10 @@ def dsd_density(infile, dsdMat=None, overlapMat=None, randomize=False):
     plt.xlabel("DSD")
     plt.ylabel("Density of function overlap")
 
+# plt.figure(1)
+# plt.subplot(211)
+# pairs_summed_overlap("PPIs and GO/rat.ppi", dsdMat="NumPy files/rat_dsd.npy")
+# plt.subplot(212)
+# pairs_summed_overlap("PPIs and GO/rat.ppi", dsdMat="NumPy files/rat_dsd.npy", randomize=True)
+# plt.show()
 
