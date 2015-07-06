@@ -4,10 +4,9 @@
 \usepackage{float}
 \usepackage{subfig}
 \usepackage[left=.75in,top=.75in,right=.75in,bottom=.75in]{geometry}
-\usepackage{verbatim}
 
 \begin{document} 
-\begin{comment}
+
 \section{rat}
 \begin{figure}[H]
 \centerline{
@@ -19,6 +18,21 @@
 }
 \subfloat[Pairs vs Cumulative Overlap]{
 \includegraphics[width=0.333333333333\textwidth]{plots/rat_pairs_overlap.png}
+}
+}
+\end{figure}
+
+\subsection{Plots based on random permutation of label sets}
+\begin{figure}[H]
+\centerline{
+\subfloat[DSD vs Density]{
+\includegraphics[width=0.333333333333\textwidth]{plots/rat_dsd_density_randomized.png}
+}
+\subfloat[DSD vs Overlap, Pairs]{
+\includegraphics[width=0.333333333333\textwidth]{plots/rat_dsd_overlap_pairs_randomized.png}
+}
+\subfloat[Pairs vs Cumulative Overlap]{
+\includegraphics[width=0.333333333333\textwidth]{plots/rat_pairs_overlap_randomized.png}
 }
 }
 \end{figure}
@@ -37,54 +51,8 @@
 }
 }
 \end{figure}
-\end{comment}
 
-\section{Rat}
-\begin{figure}[H]
-\centerline{
-\subfloat[DSD vs Density]{
-\includegraphics[width=0.333333333333\textwidth]{plots/rat_dsd_density.png}
-}
-\subfloat[DSD vs Overlap, Pairs]{
-\includegraphics[width=0.333333333333\textwidth]{plots/rat_dsd_overlap_pairs.png}
-}
-\subfloat[Pairs vs Cumulative Overlap]{
-\includegraphics[width=0.333333333333\textwidth]{plots/rat_pairs_overlap.png}
-}
-}
-\end{figure}
-
-\subsection{Plots based on randomly permutation of label sets}
-\begin{figure}[H]
-\centerline{
-\subfloat[DSD vs Density]{
-\includegraphics[width=0.333333333333\textwidth]{plots/rat_dsd_density_randomized.png}
-}
-\subfloat[DSD vs Overlap, Pairs]{
-\includegraphics[width=0.333333333333\textwidth]{plots/rat_dsd_overlap_pairs_randomized.png}
-}
-\subfloat[Pairs vs Cumulative Overlap]{
-\includegraphics[width=0.333333333333\textwidth]{plots/rat_pairs_overlap_randomized.png}
-}
-}
-\end{figure}
-
-\section{Mouse}
-\begin{figure}[H]
-\centerline{
-\subfloat[DSD vs Density]{
-\includegraphics[width=0.333333333333\textwidth]{plots/mouse_dsd_density.png}
-}
-\subfloat[DSD vs Overlap, Pairs]{
-\includegraphics[width=0.333333333333\textwidth]{plots/mouse_dsd_overlap_pairs.png}
-}
-\subfloat[Pairs vs Cumulative Overlap]{
-\includegraphics[width=0.333333333333\textwidth]{plots/mouse_pairs_overlap.png}
-}
-}
-\end{figure}
-
-\subsection{Plots based on randomly permutation of label sets}
+\subsection{Plots based on random permutation of label sets}
 \begin{figure}[H]
 \centerline{
 \subfloat[DSD vs Density]{
@@ -98,6 +66,5 @@
 }
 }
 \end{figure}
-
 
 \end{document}

@@ -28,7 +28,7 @@ organisms = options.organisms.split(' ')
 ppiExt = ".ppi"
 
 # folder we want to put plots in
-plotsDir = "plots"
+plotsDir = "test"
 
 # assume that any npy matrices will be in this folder
 # if folder doesnt exist, create
@@ -105,7 +105,7 @@ with open(options.outfile, "a") as f:
         f.write("}\n\\end{figure}\n\n")
 
         # RANDOMIZE
-        f.write("\\subsection{Plots based on randomly permutation of label sets}\n")
+        f.write("\\subsection{Plots based on random permutation of label sets}\n")
         f.write("\\begin{figure}[H]\n\\centerline{\n")
         #################
         # dsd : density #

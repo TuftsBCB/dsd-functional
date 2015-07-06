@@ -131,3 +131,16 @@ def overlap_matrix(nodeList, GOfile, npyFile, randomize=False):
         K = np.load(npyFile)
 
     return K
+
+def triu_ravel(A):
+    """
+    Given a matrix, returns the upper triangle (not including main diagonal)
+    as a 1D array. Row-major.
+    """
+    m, n = np.shape(A)
+    flat = np.array([])
+    for i in range(m):
+        if i >= n-1:
+            break
+        flat = np.append(flat, A[i][i+1:])
+    return flat

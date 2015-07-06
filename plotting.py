@@ -33,11 +33,14 @@ def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None, randomize=False):
     K = expt.overlap_matrix(nodeList, GOfile, overlapMat, randomize=randomize)
 
     # flatten D and K, sort by distance in increasing order
-    DFlat = np.ravel(D)
-    DSorted = np.argsort(DFlat)
+    #DFlat = np.ravel(D)
+    #KFlat = np.ravel(K)
 
-    KFlat = np.ravel(K)
+    DFlat = expt.triu_ravel(D)
+    KFlat = expt.triu_ravel(K)
+    DSorted = np.argsort(DFlat)
     numPairs = len(DSorted)
+
     # running sum of overlap
     overlapRSum = np.zeros(numPairs)
     overlapSum = 0.0
@@ -79,11 +82,14 @@ def pairs_summed_overlap(infile, dsdMat=None, overlapMat=None, randomize=False):
     K = expt.overlap_matrix(nodeList, GOfile, overlapMat, randomize=randomize)
 
     # flatten D and K, sort by distance in increasing order
-    DFlat = np.ravel(D)
-    DSorted = np.argsort(DFlat)
+    #DFlat = np.ravel(D)
+    #KFlat = np.ravel(K)
 
-    KFlat = np.ravel(K)
+    DFlat = expt.triu_ravel(D)
+    KFlat = expt.triu_ravel(K)
+    DSorted = np.argsort(DFlat)
     numPairs = len(DSorted)
+
     # running sum of overlap
     overlapRSum = np.zeros(numPairs)
     overlapSum = 0.0
@@ -120,30 +126,35 @@ def dsd_density(infile, dsdMat=None, overlapMat=None, randomize=False):
     K = expt.overlap_matrix(nodeList, GOfile, overlapMat, randomize=randomize)
 
     # flatten D and K, sort by distance in increasing order
-    DFlat = np.ravel(D)
-    DSorted = np.argsort(DFlat)
+    #DFlat = np.ravel(D)
+    #KFlat = np.ravel(K)
 
-    KFlat = np.ravel(K)
+    DFlat = expt.triu_ravel(D)
+    KFlat = expt.triu_ravel(K)
+    DSorted = np.argsort(DFlat)
     numPairs = len(DSorted)
+
     # list of (summed overlap):(number of pairs) ratios
     overlapRatios = np.zeros(numPairs)
     overlapSum = 0.0
+    posCI = np.zeros(numPairs)
+    negCI = np.zeros(numPairs)
     for n in range(numPairs):
         index = DSorted[n]
         overlapSum += KFlat[index]
-        overlapRatios[n] = overlapSum/(n+1)
+        ratio = overlapSum/(n+1)
+        overlapRatios[n] = ratio
+        # 95% CI
+        std = np.sqrt(ratio * (1-ratio) / (n+1))
+        posCI[n] = ratio + (1.96*std)
+        negCI[n] = ratio - (1.96*std)
 
     # dsd distances in increasing order
     distances = [DFlat[k] for k in DSorted]
 
-    plt.plot(distances, overlapRatios)
+    plt.plot(distances, overlapRatios, 'k-', distances, negCI, 'b--', distances, posCI, 'b--')
+    # set lim to min and max of CI, ignoring the first 1% of pairs
+    plt.ylim((np.min(negCI[(numPairs/100):])-0.01, np.max(posCI[(numPairs/100):])+0.01))
     plt.xlabel("DSD")
     plt.ylabel("Density of function overlap")
-
-# plt.figure(1)
-# plt.subplot(211)
-# pairs_summed_overlap("PPIs and GO/rat.ppi", dsdMat="NumPy files/rat_dsd.npy")
-# plt.subplot(212)
-# pairs_summed_overlap("PPIs and GO/rat.ppi", dsdMat="NumPy files/rat_dsd.npy", randomize=True)
-# plt.show()
 
