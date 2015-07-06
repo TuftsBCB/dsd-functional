@@ -28,7 +28,7 @@ organisms = options.organisms.split(' ')
 ppiExt = ".ppi"
 
 # folder we want to put plots in
-plotsDir = "test"
+plotsDir = "plots"
 
 # assume that any npy matrices will be in this folder
 # if folder doesnt exist, create
