@@ -154,8 +154,8 @@ def dsd_density(infile, dsdMat=None, overlapMat=None, randomize=False):
     distances = [DFlat[k] for k in DSorted]
 
     plt.plot(distances, overlapRatios, 'k-', distances, negCI, 'b--', distances, posCI, 'b--')
-    # set lim to min and max of CI, ignoring the first 1% of pairs
-    plt.ylim((np.min(negCI[(numPairs/100):])-0.01, np.max(posCI[(numPairs/100):])+0.01))
+    # set lim to min and max of CI, ignoring the first 0.1% of pairs
+    plt.ylim((np.min(negCI[(numPairs/1000):])-0.01, np.max(posCI[(numPairs/1000):])+0.01))
     plt.xlabel("DSD")
     plt.ylabel("Density of function overlap")
 
