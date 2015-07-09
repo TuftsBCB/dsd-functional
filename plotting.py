@@ -2,8 +2,9 @@
 
 import expt
 import numpy as np
+import matplotlib
+matplotlib.use("agg")
 from matplotlib import pyplot as plt
-
 
 def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None, randomize=False):
     """

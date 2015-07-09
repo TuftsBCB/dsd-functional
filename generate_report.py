@@ -5,10 +5,18 @@
 # run in command line with something like:
 # python generate_report.py "PPIs and GO" "rat mouse" "tex.txt"
 
+# these lines needed for working on ELF -- feel free to comment out
+import sys
+sys.path.append("/usr/lib64/python2.7/site-packages")
+sys.path.append("/usr/lib/python2.7/site-packages/decorator-3.4.0-py2.7.egg")
+sys.path.append("/usr/lib/python2.7/site-packages")
+
 import plotting
 import argparse
 from matplotlib import pyplot as plt
 import os
+
+plt.rc('axes.formatter', use_mathtext=True)
 
 parser = argparse.ArgumentParser()
 
@@ -64,8 +72,8 @@ with open(options.outfile, "a") as f:
 
         # save plot
         figFile = plotsDir + "/" + organism + "_dsd_density"
-        plt.savefig(figFile)
         figFile += ".png"
+        plt.savefig(figFile)
 
         f.write("\\includegraphics[width=" + width + "\\textwidth]")
         f.write("{" + figFile + "}\n}\n")
@@ -96,8 +104,8 @@ with open(options.outfile, "a") as f:
 
         # save plot
         figFile = plotsDir + "/" + organism + "_pairs_overlap"
-        plt.savefig(figFile)
         figFile += ".png"
+        plt.savefig(figFile)
 
         f.write("\\includegraphics[width=" + width + "\\textwidth]")
         f.write("{" + figFile + "}\n}\n")
@@ -116,8 +124,8 @@ with open(options.outfile, "a") as f:
 
         # save plot
         figFile = plotsDir + "/" + organism + "_dsd_density_randomized"
-        plt.savefig(figFile)
         figFile += ".png"
+        plt.savefig(figFile)
 
         f.write("\\includegraphics[width=" + width + "\\textwidth]")
         f.write("{" + figFile + "}\n}\n")
@@ -132,8 +140,8 @@ with open(options.outfile, "a") as f:
 
         # save plot
         figFile = plotsDir + "/" + organism + "_dsd_overlap_pairs_randomized"
-        plt.savefig(figFile)
         figFile += ".png"
+        plt.savefig(figFile)
 
         f.write("\\includegraphics[width=" + width + "\\textwidth]")
         f.write("{" + figFile + "}\n}\n")
@@ -148,8 +156,8 @@ with open(options.outfile, "a") as f:
 
         # save plot
         figFile = plotsDir + "/" + organism + "_pairs_overlap_randomized"
-        plt.savefig(figFile)
         figFile += ".png"
+        plt.savefig(figFile)
 
         f.write("\\includegraphics[width=" + width + "\\textwidth]")
         f.write("{" + figFile + "}\n}\n")

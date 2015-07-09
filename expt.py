@@ -118,7 +118,10 @@ def overlap_matrix(nodeList, GOfile, npyFile, randomize=False):
         nodeLabels = {key: nodeLabels[key] for key in nodeList}
 
         if randomize:
-            nodeLabels = dict(zip(np.random.permutation(nodeLabels.keys()), nodeLabels.values()))
+            #nodeLabels = dict(zip(np.random.permutation(nodeLabels.keys()), nodeLabels.values()))
+            keys = nodeLabels.keys()
+            np.random.shuffle(keys)
+            nodeLabels = dict(zip(keys, nodeLabels.values()))
 
         # if there is function overlap, set K[ij] to 1
         for i in xrange(n):
