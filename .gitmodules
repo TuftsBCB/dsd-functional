@@ -1,0 +1,3 @@
+[submodule "semsimcalc"]
+	path = semsimcalc
+	url = https://github.com/TuftsBCB/semsimcalc.git

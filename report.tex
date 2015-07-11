@@ -2,13 +2,15 @@
 
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{subfloat}
 \usepackage{subfig}
 \usepackage[left=.75in,top=.75in,right=.75in,bottom=.75in]{geometry}
 
 \begin{document} 
 
-\section{rat}
+\section{Rat}
 \begin{figure}[H]
+\caption{Plots based on original dataset}
 \centerline{
 \subfloat[DSD vs Density]{
 \includegraphics[width=0.333333333333\textwidth]{plots/rat_dsd_density.png}
@@ -22,8 +24,8 @@
 }
 \end{figure}
 
-\subsection{Plots based on random permutation of label sets}
 \begin{figure}[H]
+\caption{Plots based on random permutation of label sets}
 \centerline{
 \subfloat[DSD vs Density]{
 \includegraphics[width=0.333333333333\textwidth]{plots/rat_dsd_density_randomized.png}
@@ -37,8 +39,40 @@
 }
 \end{figure}
 
-\section{mouse}
+\section{Worm}
 \begin{figure}[H]
+\caption{Plots based on original dataset}
+\centerline{
+\subfloat[DSD vs Density]{
+\includegraphics[width=0.333333333333\textwidth]{plots/worm_dsd_density.png}
+}
+\subfloat[DSD vs Overlap, Pairs]{
+\includegraphics[width=0.333333333333\textwidth]{plots/worm_dsd_overlap_pairs.png}
+}
+\subfloat[Pairs vs Cumulative Overlap]{
+\includegraphics[width=0.333333333333\textwidth]{plots/worm_pairs_overlap.png}
+}
+}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Plots based on random permutation of label sets}
+\centerline{
+\subfloat[DSD vs Density]{
+\includegraphics[width=0.333333333333\textwidth]{plots/worm_dsd_density_randomized.png}
+}
+\subfloat[DSD vs Overlap, Pairs]{
+\includegraphics[width=0.333333333333\textwidth]{plots/worm_dsd_overlap_pairs_randomized.png}
+}
+\subfloat[Pairs vs Cumulative Overlap]{
+\includegraphics[width=0.333333333333\textwidth]{plots/worm_pairs_overlap_randomized.png}
+}
+}
+\end{figure}
+
+\section{Mouse}
+\begin{figure}[H]
+\caption{Plots based on original dataset}
 \centerline{
 \subfloat[DSD vs Density]{
 \includegraphics[width=0.333333333333\textwidth]{plots/mouse_dsd_density.png}
@@ -52,8 +86,8 @@
 }
 \end{figure}
 
-\subsection{Plots based on random permutation of label sets}
 \begin{figure}[H]
+\caption{Plots based on random permutation of label sets}
 \centerline{
 \subfloat[DSD vs Density]{
 \includegraphics[width=0.333333333333\textwidth]{plots/mouse_dsd_density_randomized.png}
@@ -66,5 +100,100 @@
 }
 }
 \end{figure}
+
+\section{Fly}
+\begin{figure}[H]
+\caption{Plots based on original dataset}
+\centerline{
+\subfloat[DSD vs Density]{
+\includegraphics[width=0.333333333333\textwidth]{plots/fly_dsd_density.png}
+}
+\subfloat[DSD vs Overlap, Pairs]{
+\includegraphics[width=0.333333333333\textwidth]{plots/fly_dsd_overlap_pairs.png}
+}
+\subfloat[Pairs vs Cumulative Overlap]{
+\includegraphics[width=0.333333333333\textwidth]{plots/fly_pairs_overlap.png}
+}
+}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Plots based on random permutation of label sets}
+\centerline{
+\subfloat[DSD vs Density]{
+\includegraphics[width=0.333333333333\textwidth]{plots/fly_dsd_density_randomized.png}
+}
+\subfloat[DSD vs Overlap, Pairs]{
+\includegraphics[width=0.333333333333\textwidth]{plots/fly_dsd_overlap_pairs_randomized.png}
+}
+\subfloat[Pairs vs Cumulative Overlap]{
+\includegraphics[width=0.333333333333\textwidth]{plots/fly_pairs_overlap_randomized.png}
+}
+}
+\end{figure}
+
+\section{Human}
+\begin{figure}[H]
+\caption{Plots based on original dataset}
+\centerline{
+\subfloat[DSD vs Density]{
+\includegraphics[width=0.333333333333\textwidth]{plots/human_dsd_density.png}
+}
+\subfloat[DSD vs Overlap, Pairs]{
+\includegraphics[width=0.333333333333\textwidth]{plots/human_dsd_overlap_pairs.png}
+}
+\subfloat[Pairs vs Cumulative Overlap]{
+\includegraphics[width=0.333333333333\textwidth]{plots/human_pairs_overlap.png}
+}
+}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Plots based on random permutation of label sets}
+\centerline{
+\subfloat[DSD vs Density]{
+\includegraphics[width=0.333333333333\textwidth]{plots/human_dsd_density_randomized.png}
+}
+\subfloat[DSD vs Overlap, Pairs]{
+\includegraphics[width=0.333333333333\textwidth]{plots/human_dsd_overlap_pairs_randomized.png}
+}
+\subfloat[Pairs vs Cumulative Overlap]{
+\includegraphics[width=0.333333333333\textwidth]{plots/human_pairs_overlap_randomized.png}
+}
+}
+\end{figure}
+
+\section{Yeast}
+\begin{figure}[H]
+\caption{Plots based on original dataset}
+\centerline{
+\subfloat[DSD vs Density]{
+\includegraphics[width=0.333333333333\textwidth]{plots/yeast_dsd_density.png}
+}
+\subfloat[DSD vs Overlap, Pairs]{
+\includegraphics[width=0.333333333333\textwidth]{plots/yeast_dsd_overlap_pairs.png}
+}
+\subfloat[Pairs vs Cumulative Overlap]{
+\includegraphics[width=0.333333333333\textwidth]{plots/yeast_pairs_overlap.png}
+}
+}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Plots based on random permutation of label sets}
+\centerline{
+\subfloat[DSD vs Density]{
+\includegraphics[width=0.333333333333\textwidth]{plots/yeast_dsd_density_randomized.png}
+}
+\subfloat[DSD vs Overlap, Pairs]{
+\includegraphics[width=0.333333333333\textwidth]{plots/yeast_dsd_overlap_pairs_randomized.png}
+}
+\subfloat[Pairs vs Cumulative Overlap]{
+\includegraphics[width=0.333333333333\textwidth]{plots/yeast_pairs_overlap_randomized.png}
+}
+}
+\end{figure}
+
+
 
 \end{document}
