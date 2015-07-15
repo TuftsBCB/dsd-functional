@@ -9,6 +9,8 @@ import dsd
 import networkx as nx
 import time
 import os.path
+sys.path.append("./semsimcalc")
+import semsimcalc
 
 
 def setup_graph(infile):
@@ -135,6 +137,7 @@ def overlap_matrix(nodeList, GOfile, npyFile, randomize=False):
 
     return K
 
+
 def triu_ravel(A):
     """
     Given a matrix, returns the upper triangle (not including main diagonal)
@@ -147,3 +150,50 @@ def triu_ravel(A):
             break
         flat = np.append(flat, A[i][i+1:])
     return flat
+
+
+def resnik_matrix(nodeList, GOfile, calc, npyFile, randomize=False):
+    """
+    like overlap matrix, this time using semsimcalc's resnik similarity measure
+    calc refers to SemSimCalculator instance
+    """
+    if not npyFile or not os.path.isfile(npyFile) or randomize:
+        n = len(nodeList)
+        # construct K = overlap matrix, dictionary of node:labels
+        R = np.zeros((n, n), dtype=float)
+        # get dictionary and reconstruct to only include nodes in nodeList
+        nodeLabels = GO_to_dict(nodeList, GOfile)
+        nodeLabels = {key: nodeLabels[key] for key in nodeList}
+
+        if randomize:
+            #nodeLabels = dict(zip(np.random.permutation(nodeLabels.keys()), nodeLabels.values()))
+            keys = nodeLabels.keys()
+            np.random.shuffle(keys)
+            nodeLabels = dict(zip(keys, nodeLabels.values()))
+
+        empty_count = 0
+        scoreless_count = 0
+        for i in xrange(n):
+            for j in xrange(i+1,n):
+                lefts = nodeLabels[nodeList[i]]
+                rights = nodeLabels[nodeList[j]]
+                if not lefts or not rights:
+                    R[i][j] = R[j][i] = 0
+                    empty_count += 1
+                else:
+                    score = calc.pairwise_average_term_comp(lefts, rights, calc.simRes)
+                    if score == None:
+                        R[i][j] = R[j][i] = 0
+                        scoreless_count += 1
+                    else:
+                        R[i][j] = R[j][i] = score
+
+        print "number of pairs comprising protein(s) with empty label set(s): {}".format(empty_count)
+        print "number of non-empty pairs without proper resnik score: {}".format(scoreless_count)
+
+        if npyFile and not randomize:
+            np.save(npyFile, R)
+    else:
+        R = np.load(npyFile)
+
+    return R

@@ -1,9 +1,10 @@
 # just combining the various plotting routines into a single callable module
+# plotting functions have optional matrix params -- these are paths to .npy binary files (matrices)
 
 import expt
 import numpy as np
 import matplotlib
-matplotlib.use("agg")
+#matplotlib.use("agg")
 from matplotlib import pyplot as plt
 
 def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None, randomize=False):
@@ -154,8 +155,63 @@ def dsd_density(infile, dsdMat=None, overlapMat=None, randomize=False):
     distances = [DFlat[k] for k in DSorted]
 
     plt.plot(distances, overlapRatios, 'k-', distances, negCI, 'b--', distances, posCI, 'b--')
-    # set lim to min and max of CI, ignoring the first 0.1% of pairs
-    plt.ylim((np.min(negCI[(numPairs/1000):])-0.01, np.max(posCI[(numPairs/1000):])+0.01))
+    # set lim to min and max of CI, ignoring the first 1000 pairs
+    plt.ylim((np.min(negCI[1000:])-0.01, np.max(posCI[1000:])+0.01))
     plt.xlabel("DSD")
     plt.ylabel("Density of function overlap")
 
+
+def dsd_density_res(infile, calc, dsdMat=None, resMat=None, randomize=False):
+    """
+    plots dsd against resnik score density
+    takes in .ppi file (infile) and SemSimCalculator instance (calc)
+    """
+    # need to decide on this
+    LMSetSize = 50
+
+    # assuming GOfile is in same directory as ppi file, replace .ppi extension with NCBI_to_GO
+    GOfile = infile[:-4]
+    GOfile += "_NCBI_to_GO"
+
+    G = expt.setup_graph(infile)
+
+    # capture canonical node order
+    nodeList = G.nodes()
+
+    LMSet = expt.get_LMset(G, nodeList, LMSetSize)
+
+    D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
+    R = expt.resnik_matrix(nodeList, GOfile, calc, resMat, randomize=randomize)
+
+    # flatten D and K, sort by distance in increasing order
+    #DFlat = np.ravel(D)
+    #KFlat = np.ravel(K)
+
+    DFlat = expt.triu_ravel(D)
+    RFlat = expt.triu_ravel(R)
+    DSorted = np.argsort(DFlat)
+    numPairs = len(DSorted)
+
+    # list of (summed overlap):(number of pairs) ratios
+    overlapRatios = np.zeros(numPairs)
+    overlapSum = 0.0
+    posCI = np.zeros(numPairs)
+    negCI = np.zeros(numPairs)
+    for n in range(numPairs):
+        index = DSorted[n]
+        overlapSum += RFlat[index]
+        ratio = overlapSum/(n+1)
+        overlapRatios[n] = ratio
+        # 95% CI
+        std = np.sqrt(ratio * (1-ratio) / (n+1))
+        posCI[n] = ratio + (1.96*std)
+        negCI[n] = ratio - (1.96*std)
+
+    # dsd distances in increasing order
+    distances = [DFlat[k] for k in DSorted]
+
+    plt.plot(distances, overlapRatios, 'k-', distances, negCI, 'b--', distances, posCI, 'b--')
+    # set lim to min and max of CI, ignoring the first 1000 pairs
+    plt.ylim((np.min(negCI[1000:])-0.01, np.max(posCI[1000:])+0.01))
+    plt.xlabel("DSD")
+    plt.ylabel("Resnik similarity score density")
