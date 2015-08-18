@@ -69,6 +69,19 @@ def dsd_matrix(G, nodeList, LMset, npyFile):
     return D
 
 
+def sp_matrix(G, nodeList, npyFile):
+    # same as dsd_matrix, but for shortest-path distance
+    if not npyFile or not os.path.isfile(npyFile):
+        S = dsd.spmatrix(G, nx.shortest_path(G), nodeList)
+
+        if npyFile:
+            np.save(npyFile, S)
+    else:
+        S = np.load(npyFile)
+
+    return S
+
+
 def GO_to_dict(nodeList, GOfile):
     """
     given set of nodes and name of GO file,

@@ -102,7 +102,6 @@ with open(options.outfile, "a") as f:
         f.write("\\subfloat[Pairs vs Cumulative Overlap]{\n")
         plt.figure(figNum)
         plotting.pairs_summed_overlap(infile, npyPath + "_dsd.npy", npyPath + "_overlap.npy")
-
         # save plot
         figFile = plotsDir + "/" + organism + "_pairs_overlap"
         figFile += ".png"
@@ -162,6 +161,42 @@ with open(options.outfile, "a") as f:
         f.write("\\includegraphics[width=" + width + "\\textwidth]")
         f.write("{" + figFile + "}\n}\n")
         figNum += 1
+        f.write("}\n\\end{figure}\n\n")
+
+        # SP COMPARISONS
+        f.write("\\begin{figure}[H]\n\\caption{Shortest-path distance (SPD) comparisons}\n\\centerline{\n")
+        #################
+        # spd : density #
+        #################
+        f.write("\\subfloat[SPD vs Density]{\n")
+        plt.figure(figNum)
+        plotting.dsd_density(infile, npyPath + "_spd.npy", npyPath + "_overlap.npy", sp=True)
+
+        # save plot
+        figFile = plotsDir + "/" + organism + "_spd_density"
+        figFile += ".png"
+        plt.savefig(figFile)
+
+        f.write("\\includegraphics[width=" + width + "\\textwidth]")
+        f.write("{" + figFile + "}\n}\n")
+        figNum += 1
+
+        ########################
+        # spd : pairs, overlap #
+        ########################
+        f.write("\\subfloat[SPD vs Overlap, Pairs]{\n")
+        plt.figure(figNum)
+        plotting.dsd_overlap_pairs(infile, npyPath + "_spd.npy", npyPath + "_overlap.npy", sp=True)
+
+        # save plot
+        figFile = plotsDir + "/" + organism + "_spd_overlap_pairs"
+        figFile += ".png"
+        plt.savefig(figFile)
+
+        f.write("\\includegraphics[width=" + width + "\\textwidth]")
+        f.write("{" + figFile + "}\n}\n")
+        figNum += 1
+
         f.write("}\n\\end{figure}\n\n")
 
         print("done!")

@@ -57,8 +57,8 @@ except OSError:
 # initialize semsimcalc
 calc = semsimcalc.SemSimCalculator(options.oboFile, options.acStrippedFile)
 
-# for resnik scores, only plot dsd:density (normal and randomized)
-width = str(0.5)
+# for resnik scores, plot dsd:density (normal and randomized), as well as sp comparison
+width = str(1.0/3)
 
 # append, don't overwrite
 with open(options.outfile, "a") as f:
@@ -102,6 +102,23 @@ with open(options.outfile, "a") as f:
         f.write("\\includegraphics[width=" + width + "\\textwidth]")
         f.write("{" + figFile + "}\n}\n")
         figNum += 1
+
+        #################
+        # sp comparison #
+        #################
+        f.write("\\subfloat[Shortest-path distance comparison]{\n")
+        plt.figure(figNum)
+        plotting.dsd_density_res(infile, calc, npyPath + "_spd.npy", npyPath + "_res.npy", sp=True)
+
+        # save plot
+        figFile = plotsDir + "/" + organism + "_spd_density_res"
+        figFile += ".png"
+        plt.savefig(figFile)
+
+        f.write("\\includegraphics[width=" + width + "\\textwidth]")
+        f.write("{" + figFile + "}\n}\n")
+        figNum += 1
+
         f.write("}\n\\end{figure}\n\n")
 
         print("done!")

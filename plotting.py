@@ -1,13 +1,16 @@
 # just combining the various plotting routines into a single callable module
 # plotting functions have optional matrix params -- these are paths to .npy binary files (matrices)
+# for all functions:
+#    if sp is true, use shortest-path distance as metric instead of DSD.
+#    -- in this case, assume dsdMat, if specified, points to path of sp matrix.
 
 import expt
 import numpy as np
 import matplotlib
-matplotlib.use("agg")
+#matplotlib.use("agg")
 from matplotlib import pyplot as plt
 
-def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None, randomize=False):
+def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None, randomize=False, sp=False):
     """
     plots dsd against (normalized):
         1. summed overlap
@@ -25,13 +28,14 @@ def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None, randomize=False):
     # capture canonical node order
     nodeList = G.nodes()
 
-    LMSet = expt.get_LMset(G, nodeList, LMSetSize)
+    if sp:
+        D = expt.sp_matrix(G, nodeList, dsdMat)
+        metric = "Shortest-path distance"
+    else:
+        LMSet = expt.get_LMset(G, nodeList, LMSetSize)
+        D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
+        metric = "DSD"
 
-    D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
-    # if randomize:
-    #     K = np.random.random_integers(0, 1, np.shape(D))
-    #     K = (K + np.transpose(K)) / 2
-    # else:
     K = expt.overlap_matrix(nodeList, GOfile, overlapMat, randomize=randomize)
 
     # flatten D and K, sort by distance in increasing order
@@ -42,7 +46,6 @@ def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None, randomize=False):
     KFlat = expt.triu_ravel(K)
     DSorted = np.argsort(DFlat)
     numPairs = len(DSorted)
-
     # running sum of overlap
     overlapRSum = np.zeros(numPairs)
     overlapSum = 0.0
@@ -58,7 +61,7 @@ def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None, randomize=False):
     plt.plot(distances, overlapRSum/overlapRSum[-1], "b-", label="cumulative overlap")
 
     plt.plot(distances, np.array(range(numPairs))/float(numPairs), "r-", label="protein pairs")
-    plt.xlabel("DSD")
+    plt.xlabel(metric)
     plt.legend()
 
 
@@ -106,7 +109,7 @@ def pairs_summed_overlap(infile, dsdMat=None, overlapMat=None, randomize=False):
     plt.ylabel("Running sum of function overlap")
 
 
-def dsd_density(infile, dsdMat=None, overlapMat=None, randomize=False):
+def dsd_density(infile, dsdMat=None, overlapMat=None, randomize=False, sp=False):
     """
     plots dsd against overlap density
     """
@@ -122,9 +125,14 @@ def dsd_density(infile, dsdMat=None, overlapMat=None, randomize=False):
     # capture canonical node order
     nodeList = G.nodes()
 
-    LMSet = expt.get_LMset(G, nodeList, LMSetSize)
+    if sp:
+        D = expt.sp_matrix(G, nodeList, dsdMat)
+        metric = "Shortest-path distance"
+    else:
+        LMSet = expt.get_LMset(G, nodeList, LMSetSize)
+        D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
+        metric = "DSD"
 
-    D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
     K = expt.overlap_matrix(nodeList, GOfile, overlapMat, randomize=randomize)
 
     # flatten D and K, sort by distance in increasing order
@@ -157,11 +165,11 @@ def dsd_density(infile, dsdMat=None, overlapMat=None, randomize=False):
     plt.plot(distances, overlapRatios, 'k-', distances, negCI, 'b--', distances, posCI, 'b--')
     # set lim to min and max of CI, ignoring the first 1000 pairs
     plt.ylim((np.min(negCI[1000:])-0.01, np.max(posCI[1000:])+0.01))
-    plt.xlabel("DSD")
+    plt.xlabel(metric)
     plt.ylabel("Density of function overlap")
 
 
-def dsd_density_res(infile, calc, dsdMat=None, resMat=None, randomize=False):
+def dsd_density_res(infile, calc, dsdMat=None, resMat=None, randomize=False, sp=False):
     """
     plots dsd against resnik score density
     takes in .ppi file (infile) and SemSimCalculator instance (calc)
@@ -178,9 +186,13 @@ def dsd_density_res(infile, calc, dsdMat=None, resMat=None, randomize=False):
     # capture canonical node order
     nodeList = G.nodes()
 
-    LMSet = expt.get_LMset(G, nodeList, LMSetSize)
-
-    D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
+    if sp:
+        D = expt.sp_matrix(G, nodeList, dsdMat)
+        metric = "Shortest-path distance"
+    else:
+        LMSet = expt.get_LMset(G, nodeList, LMSetSize)
+        D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
+        metric = "DSD"
     R = expt.resnik_matrix(nodeList, GOfile, calc, resMat, randomize=randomize)
 
     # flatten D and K, sort by distance in increasing order
@@ -213,5 +225,5 @@ def dsd_density_res(infile, calc, dsdMat=None, resMat=None, randomize=False):
     plt.plot(distances, overlapRatios, 'k-', distances, negCI, 'b--', distances, posCI, 'b--')
     # set lim to min and max of CI, ignoring the first 1000 pairs
     plt.ylim((np.min(negCI[1000:])-0.01, np.max(posCI[1000:])+0.01))
-    plt.xlabel("DSD")
+    plt.xlabel(metric)
     plt.ylabel("Resnik similarity score density")
