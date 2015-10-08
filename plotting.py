@@ -32,8 +32,7 @@ def dsd_overlap_pairs(infile, dsdMat=None, overlapMat=None, randomize=False, sp=
         D = expt.sp_matrix(G, nodeList, dsdMat)
         metric = "Shortest-path distance"
     else:
-        LMSet = expt.get_LMset(G, nodeList, LMSetSize)
-        D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
+        D = expt.dsd_matrix(G, nodeList, dsdMat)
         metric = "DSD"
 
     K = expt.overlap_matrix(nodeList, GOfile, overlapMat, randomize=randomize)
@@ -69,9 +68,6 @@ def pairs_summed_overlap(infile, dsdMat=None, overlapMat=None, randomize=False):
     """
     plots pairs against running sum of overlap
     """
-    # need to decide on this
-    LMSetSize = 50
-
     # assuming GOfile is in same directory as ppi file, replace .ppi extension with NCBI_to_GO
     GOfile = infile[:-4]
     GOfile += "_NCBI_to_GO"
@@ -81,9 +77,7 @@ def pairs_summed_overlap(infile, dsdMat=None, overlapMat=None, randomize=False):
     # capture canonical node order
     nodeList = G.nodes()
 
-    LMSet = expt.get_LMset(G, nodeList, LMSetSize)
-
-    D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
+    D = expt.dsd_matrix(G, nodeList, dsdMat)
     K = expt.overlap_matrix(nodeList, GOfile, overlapMat, randomize=randomize)
 
     # flatten D and K, sort by distance in increasing order
@@ -113,9 +107,6 @@ def dsd_density(infile, dsdMat=None, overlapMat=None, randomize=False, sp=False)
     """
     plots dsd against overlap density
     """
-    # need to decide on this
-    LMSetSize = 50
-
     # assuming GOfile is in same directory as ppi file, replace .ppi extension with NCBI_to_GO
     GOfile = infile[:-4]
     GOfile += "_NCBI_to_GO"
@@ -129,8 +120,7 @@ def dsd_density(infile, dsdMat=None, overlapMat=None, randomize=False, sp=False)
         D = expt.sp_matrix(G, nodeList, dsdMat)
         metric = "Shortest-path distance"
     else:
-        LMSet = expt.get_LMset(G, nodeList, LMSetSize)
-        D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
+        D = expt.dsd_matrix(G, nodeList, dsdMat)
         metric = "DSD"
 
     K = expt.overlap_matrix(nodeList, GOfile, overlapMat, randomize=randomize)
@@ -174,9 +164,6 @@ def dsd_density_res(infile, calc, dsdMat=None, resMat=None, randomize=False, sp=
     plots dsd against resnik score density
     takes in .ppi file (infile) and SemSimCalculator instance (calc)
     """
-    # need to decide on this
-    LMSetSize = 50
-
     # assuming GOfile is in same directory as ppi file, replace .ppi extension with NCBI_to_GO
     GOfile = infile[:-4]
     GOfile += "_NCBI_to_GO"
@@ -190,8 +177,7 @@ def dsd_density_res(infile, calc, dsdMat=None, resMat=None, randomize=False, sp=
         D = expt.sp_matrix(G, nodeList, dsdMat)
         metric = "Shortest-path distance"
     else:
-        LMSet = expt.get_LMset(G, nodeList, LMSetSize)
-        D = expt.dsd_matrix(G, nodeList, LMSet, dsdMat)
+        D = expt.dsd_matrix(G, nodeList, dsdMat)
         metric = "DSD"
     R = expt.resnik_matrix(nodeList, GOfile, calc, resMat, randomize=randomize)
 
