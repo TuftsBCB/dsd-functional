@@ -83,6 +83,29 @@ def sp_matrix(G, nodeList, npyFile):
     return S
 
 
+def diffusion_matrix(G, nodeList, npyFile, gamma=8):
+    """
+    compute inverse of Laplacian matrix and symmetrize. (default gamma is arbitrary)
+    the higher the influence, the closer we expect function to be, so let distances be reciprocal.
+    """
+    if not npyFile or not os.path.isfile(npyFile):
+        L = nx.laplacian_matrix(G,nodeList).toarray()
+        m, n = np.shape(L)
+        L = L + (np.eye(m, n)*gamma)
+        D = np.linalg.inv(L)
+        n = len(nodeList)
+        for i in xrange(n):
+            for j in xrange(i+1,n):
+                D[i][j] = D[j][i] = 1/(min(D[i][j], D[j][i]))
+
+        if npyFile:
+            np.save(npyFile, D)
+    else:
+        D = np.load(npyFile)
+
+    return D
+
+
 def GO_to_dict(nodeList, GOfile):
     """
     given set of nodes and name of GO file,

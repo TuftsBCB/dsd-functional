@@ -215,22 +215,29 @@ def dsd_density_res(infile, calc, dsdMat=None, resMat=None, randomize=False, sp=
     plt.ylabel("Resnik similarity score density")
 
 
-ALL_DISTANCE_METRICS = {'DSD': None, 'SPD': None}
+ALL_DISTANCE_METRICS = {'DSD': None, 'SPD': None, 'DFD': None}
 
 def all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METRICS, overlapMat=None, randomize=False):
     """
     Plots sorted pairs against density for various distance metrics.
     Currently, only DSD ('DSD') and SPD ('SPD') are supported.
+    Experimenting with DFD (diffusion distance)
 
     distanceMetrics is a dictionary containing distance metrics as keys and
     paths to their respective NumPy matrices, or None, as values.
     e.g. -- {'dsd': 'NumPy files/rat_dsd.npy'}
     Default is all supported metrics, with no saved matrices.
+
+    Sample function call:
+    all_distance_pairs_density('PPIs and GO/rat.ppi', distanceMetrics={'DSD': 'NumPy files/rat_dsd.npy',\
+     'SPD': 'NumPy files/rat_spd.npy', 'DFD': 'NumPy files/rat_dfd.npy'}, \
+    overlapMat='NumPy files/rat_overlap.npy')
     """
     # mapping from metric to function that returns its matrix.
     # Assume each function can be called with identical parameters.
     metrics = {'DSD' : expt.dsd_matrix, \
-               'SPD' : expt.sp_matrix}
+               'SPD' : expt.sp_matrix, \
+               'DFD': expt.diffusion_matrix}
 
     # assuming GOfile is in same directory as ppi file, replace .ppi extension with NCBI_to_GO
     GOfile = infile[:-4]
@@ -245,6 +252,8 @@ def all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METRICS, ove
     KFlat = expt.triu_ravel(K)
     numPairs = len(KFlat)
 
+    lower = 1.0
+    upper = 0.0
     for metric in distanceMetrics:
         if metric not in metrics:
             continue
@@ -261,8 +270,10 @@ def all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METRICS, ove
             overlapRatios[n] = ratio
 
         plt.plot(range(numPairs), overlapRatios, label=metric)
-        # set lim to min and max of CI, ignoring the first 1000 pairs
-        plt.ylim((np.min(overlapRatios[1000:])-0.01, np.max(overlapRatios[1000:])+0.01))
+        lower = min(lower, np.min(overlapRatios[1000:]))
+        upper = max(upper, np.max(overlapRatios[1000:]))
+
+    plt.ylim(lower-0.01, upper+0.01)
 
     plt.xlabel("Sorted pairs in order of increasing distance")
     plt.ylabel("Density of function overlap")
