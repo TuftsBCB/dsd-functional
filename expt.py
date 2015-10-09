@@ -55,7 +55,10 @@ def dsd_matrix(G, nodeList, npyFile, LMsetSize=50):
         #
         # construct hemat
         #
-        HEmatrix = dsd.hematrix(np.array(nx.adjacency_matrix(G,nodeList).todense()))
+        adjMatrix = np.array(nx.adjacency_matrix(G,nodeList))
+        if np.shape(adjMatrix) == ():
+            adjMatrix = np.array(nx.adjacency_matrix(G,nodeList).todense())
+        HEmatrix = dsd.hematrix(adjMatrix)
 
         # construct DSD
         LMset = get_LMset(G, nodeList, LMsetSize)
