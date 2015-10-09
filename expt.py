@@ -89,7 +89,11 @@ def diffusion_matrix(G, nodeList, npyFile, gamma=8):
     the higher the influence, the closer we expect function to be, so let distances be reciprocal.
     """
     if not npyFile or not os.path.isfile(npyFile):
-        L = np.array(nx.laplacian_matrix(G,nodeList).todense())
+
+        L = np.array(nx.laplacian_matrix(G,nodeList))
+        # depending on version of networkx, might get sparse matrix instead. if so, do this:
+        if np.shape(L) == ():
+            L = np.array(nx.laplacian_matrix(G,nodeList).todense())
         m, n = np.shape(L)
         L = L + (np.eye(m, n)*gamma)
         D = np.linalg.inv(L)
