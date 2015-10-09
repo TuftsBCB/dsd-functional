@@ -49,7 +49,7 @@ def get_LMset(G, nodeList, LMSetSize):
     return degDescending[0:LMSetSize]
 
 
-def dsd_matrix(G, nodeList, npyFile, LMSetSize = 50):
+def dsd_matrix(G, nodeList, npyFile, LMsetSize=50):
     # if npy path not entered, or file does not exist, compute D
     if not npyFile or not os.path.isfile(npyFile):
         #
@@ -58,7 +58,7 @@ def dsd_matrix(G, nodeList, npyFile, LMSetSize = 50):
         HEmatrix = dsd.hematrix(np.array(nx.adjacency_matrix(G,nodeList).todense()))
 
         # construct DSD
-        LMSet = get_LMset(G, nodeList, LMSetSize)
+        LMset = get_LMset(G, nodeList, LMsetSize)
         D = dsd.DSD(HEmatrix,LMset)
 
         if npyFile:

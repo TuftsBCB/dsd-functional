@@ -40,7 +40,7 @@ except OSError:
     if not os.path.isdir(npyDir):
         raise
 
-distanceMetrics = {'DSD': None,  'SPD': None}
+distanceMetrics = {'DSD': None,  'SPD': None, 'DFD': None}
 
 figNum = 1
 for organism in organisms:
@@ -51,6 +51,7 @@ for organism in organisms:
 
     distanceMetrics['DSD'] = npyPath + "_dsd.npy"
     distanceMetrics['SPD'] = npyPath + "_spd.npy"
+    distanceMetrics['DFD'] = npyPath + "_dfd.npy"
 
     plt.figure(figNum)
     plotting.all_distance_pairs_density(infile, distanceMetrics=distanceMetrics, overlapMat=npyPath + "_overlap.npy")
