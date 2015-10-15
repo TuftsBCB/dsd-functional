@@ -33,10 +33,13 @@ def setup_graph(infile):
     return G
 
 
-def get_LMset(G, nodeList, LMSetSize):
+def get_LMset(G, nodeList, LMsetSize, randomize=False):
     """
     given a graph, its corresponding nodelist and LM set size, computes and returns LM set.
     """
+    if randomize:
+        return np.random.choice(len(nodeList), LMsetSize, replace=False)
+
     degree = np.array([G.degree(i) for i in nodeList],dtype='float')
 
     # sort nodes by degree
@@ -46,10 +49,10 @@ def get_LMset(G, nodeList, LMSetSize):
     # use the highest degree nodes as landmarks in each case
     # this is based on the assumption that high-degree nodes will be
     # easiest to match using sequence or other side information
-    return degDescending[0:LMSetSize]
+    return degDescending[0:LMsetSize]
 
 
-def dsd_matrix(G, nodeList, npyFile, LMsetSize=50):
+def dsd_matrix(G, nodeList, npyFile, LMsetSize=50, randomize_LMset=False):
     # if npy path not entered, or file does not exist, compute D
     if not npyFile or not os.path.isfile(npyFile):
         #
@@ -61,16 +64,39 @@ def dsd_matrix(G, nodeList, npyFile, LMsetSize=50):
         HEmatrix = dsd.hematrix(adjMatrix)
 
         # construct DSD
-        LMset = get_LMset(G, nodeList, LMsetSize)
+        LMset = get_LMset(G, nodeList, LMsetSize, randomize=randomize_LMset)
         D = dsd.DSD(HEmatrix,LMset)
 
         if npyFile:
-            np.save(npyFile, D)
+            try:
+                np.save(npyFile, D)
+            except IOError:
+                os.makedirs(npyFile[:npyFile.rfind('/')])
+                np.save(npyFile, D)
     # otherwise just load and return it
     else:
         D = np.load(npyFile)
 
     return D
+
+def dsd_random(G, nodeList, npyFile):
+    return dsd_matrix(G, nodeList, npyFile, randomize_LMset=True)
+
+
+def dsd_200(G, nodeList, npyFile):
+    return dsd_matrix(G, nodeList, npyFile, LMsetSize=200)
+
+
+def dsd_200_random(G, nodeList, npyFile):
+    return dsd_matrix(G, nodeList, npyFile, LMsetSize=200, randomize_LMset=True)
+
+
+def dsd_500(G, nodeList, npyFile):
+    return dsd_matrix(G, nodeList, npyFile, LMsetSize=500)
+
+
+def dsd_500_random(G, nodeList, npyFile):
+    return dsd_matrix(G, nodeList, npyFile, LMsetSize=500, randomize_LMset=True)
 
 
 def sp_matrix(G, nodeList, npyFile):

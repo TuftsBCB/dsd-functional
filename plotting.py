@@ -215,7 +215,9 @@ def dsd_density_res(infile, calc, dsdMat=None, resMat=None, randomize=False, sp=
     plt.ylabel("Resnik similarity score density")
 
 
-ALL_DISTANCE_METRICS = {'DSD': None, 'SPD': None, 'DFD': None}
+ALL_DISTANCE_METRICS = {'DSD 50LM': None, 'DSD 50LM (random)' : None, 'DSD 500LM':None,\
+                        'DSD 500LM (random)': None, 'DSD 200LM':None, 'DSD 200LM (random)': None,\
+                        'SPD': None, 'DFD': None}
 
 def compute_all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METRICS, overlapMat=None, randomize=False):
     """
@@ -235,9 +237,14 @@ def compute_all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METR
 
     # mapping from metric to function that returns its matrix.
     # Assume each function can be called with identical parameters.
-    metrics = {'DSD' : expt.dsd_matrix, \
-               'SPD' : expt.sp_matrix, \
-               'DFD': expt.diffusion_matrix}
+    metricMatrices = {'DSD 50LM' : expt.dsd_matrix, \
+                'DSD 50LM (random)' : expt.dsd_random, \
+                'SPD' : expt.sp_matrix, \
+                'DFD': expt.diffusion_matrix, \
+                'DSD 500LM': expt.dsd_500, \
+                'DSD 500LM (random)': expt.dsd_500_random, \
+                'DSD 200LM': expt.dsd_200, \
+                'DSD 200LM (random)': expt.dsd_200_random}
 
     # assuming GOfile is in same directory as ppi file, replace .ppi extension with NCBI_to_GO
     GOfile = infile[:-4]
@@ -253,9 +260,10 @@ def compute_all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METR
     numPairs = len(KFlat)
 
     for metric in distanceMetrics:
-        if metric not in metrics:
+        if metric not in metricMatrices:
+            print(metric + 'not in metricMatrices')
             continue
-        D = metrics[metric](G, nodeList, distanceMetrics[metric])
+        D = metricMatrices[metric](G, nodeList, distanceMetrics[metric])
         DFlat = expt.triu_ravel(D)
         DSorted = np.argsort(DFlat)
         # list of (summed overlap):(number of pairs) ratios
@@ -289,18 +297,13 @@ def all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METRICS, ove
     """
     metricDict = compute_all_distance_pairs_density(infile, distanceMetrics, overlapMat, randomize)
 
-    # mapping from metric to function that returns its matrix.
-    # Assume each function can be called with identical parameters.
-    metrics = {'DSD' : expt.dsd_matrix, \
-               'SPD' : expt.sp_matrix, \
-               'DFD': expt.diffusion_matrix}
-
     lower = 1.0
     upper = 0.0
     for metric in distanceMetrics:
-        if metric not in metrics:
+        try:
+            DFlat, DSorted, overlapRatios = metricDict[metric]
+        except KeyError:
             continue
-        DFlat, DSorted, overlapRatios = metricDict[metric]
 
         plt.plot(range(len(overlapRatios)), overlapRatios, label=metric)
         lower = min(lower, np.min(overlapRatios[1000:]))
@@ -311,4 +314,3 @@ def all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METRICS, ove
     plt.xlabel("Sorted pairs in order of increasing distance")
     plt.ylabel("Density of function overlap")
     plt.legend()
-

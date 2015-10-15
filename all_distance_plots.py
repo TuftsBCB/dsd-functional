@@ -40,21 +40,26 @@ except OSError:
     if not os.path.isdir(npyDir):
         raise
 
-distanceMetrics = {'DSD': None,  'SPD': None, 'DFD': None}
+distanceMetrics = {}
 
 figNum = 1
 for organism in organisms:
     # setup
     print("generating plots for: " + organism)
     infile = options.directory + "/" + organism + ppiExt
-    npyPath = npyDir + "/" + organism
 
-    distanceMetrics['DSD'] = npyPath + "_dsd.npy"
-    distanceMetrics['SPD'] = npyPath + "_spd.npy"
-    distanceMetrics['DFD'] = npyPath + "_dfd.npy"
+    distanceMetrics['DSD 50LM'] = npyDir + "/dsd_50/" + organism + "_dsd.npy"
+    distanceMetrics['DSD 50LM (random)'] = npyDir + "/dsd_50_random/" + organism + "_dsd.npy"
+    distanceMetrics['DSD 200LM'] = npyDir + "/dsd_200/" + organism + "_dsd.npy"
+    distanceMetrics['DSD 200LM (random)'] = npyDir + "/dsd_200_random/" + organism + "_dsd.npy"
+    distanceMetrics['DSD 500LM'] = npyDir + "/dsd_500/" + organism + "_dsd.npy"
+    distanceMetrics['DSD 500LM (random)'] = npyDir + "/dsd_500_random/" + organism + "_dsd.npy"
+    distanceMetrics['SPD'] = npyDir + "/" + organism + "_spd.npy"
+    distanceMetrics['DFD'] = npyDir + "/" + organism + "_dfd.npy"
 
     plt.figure(figNum)
-    plotting.all_distance_pairs_density(infile, distanceMetrics=distanceMetrics, overlapMat=npyPath + "_overlap.npy")
+    plotting.all_distance_pairs_density(infile, distanceMetrics=distanceMetrics, \
+        overlapMat=npyDir + "/" + organism + "_overlap.npy")
 
     # save plot
     figFile = plotsDir + "/" + organism + "_alld_pairs_density"
