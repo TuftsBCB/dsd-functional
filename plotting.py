@@ -244,7 +244,7 @@ def compute_all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METR
                 'DSD 500LM': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize = 500),\
                 'DSD 500LM (random)': lambda G, nodeList, npyFile: dsd_matrix(G, nodeList, npyFile, LMsetSize=500, randomize_LMset=True), \
                 'DSD 200LM': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize = 200),\
-                'DSD 200LM (random)': lambda G, nodeList, npyFile: dsd_matrix(G, nodeList, npyFile, LMsetSize=500, randomize_LMset=True)}
+                'DSD 200LM (random)': lambda G, nodeList, npyFile: dsd_matrix(G, nodeList, npyFile, LMsetSize=200, randomize_LMset=True)}
 
     # assuming GOfile is in same directory as ppi file, replace .ppi extension with NCBI_to_GO
     GOfile = infile[:-4]
