@@ -79,25 +79,6 @@ def dsd_matrix(G, nodeList, npyFile, LMsetSize=50, randomize_LMset=False):
 
     return D
 
-def dsd_random(G, nodeList, npyFile):
-    return dsd_matrix(G, nodeList, npyFile, randomize_LMset=True)
-
-
-def dsd_200(G, nodeList, npyFile):
-    return dsd_matrix(G, nodeList, npyFile, LMsetSize=200)
-
-
-def dsd_200_random(G, nodeList, npyFile):
-    return dsd_matrix(G, nodeList, npyFile, LMsetSize=200, randomize_LMset=True)
-
-
-def dsd_500(G, nodeList, npyFile):
-    return dsd_matrix(G, nodeList, npyFile, LMsetSize=500)
-
-
-def dsd_500_random(G, nodeList, npyFile):
-    return dsd_matrix(G, nodeList, npyFile, LMsetSize=500, randomize_LMset=True)
-
 
 def sp_matrix(G, nodeList, npyFile):
     # same as dsd_matrix, but for shortest-path distance

@@ -238,13 +238,13 @@ def compute_all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METR
     # mapping from metric to function that returns its matrix.
     # Assume each function can be called with identical parameters.
     metricMatrices = {'DSD 50LM' : expt.dsd_matrix, \
-                'DSD 50LM (random)' : expt.dsd_random, \
+                'DSD 50LM (random)' : lambda G, nodeList, npyFile: dsd_matrix(G, nodeList, npyFile, LMsetSize=50, randomize_LMset=True), \
                 'SPD' : expt.sp_matrix, \
                 'DFD': expt.diffusion_matrix, \
-                'DSD 500LM': expt.dsd_500, \
-                'DSD 500LM (random)': expt.dsd_500_random, \
-                'DSD 200LM': expt.dsd_200, \
-                'DSD 200LM (random)': expt.dsd_200_random}
+                'DSD 500LM': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize = 500),\
+                'DSD 500LM (random)': lambda G, nodeList, npyFile: dsd_matrix(G, nodeList, npyFile, LMsetSize=500, randomize_LMset=True), \
+                'DSD 200LM': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize = 200),\
+                'DSD 200LM (random)': lambda G, nodeList, npyFile: dsd_matrix(G, nodeList, npyFile, LMsetSize=500, randomize_LMset=True)}
 
     # assuming GOfile is in same directory as ppi file, replace .ppi extension with NCBI_to_GO
     GOfile = infile[:-4]
