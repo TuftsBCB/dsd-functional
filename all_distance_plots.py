@@ -48,14 +48,22 @@ for organism in organisms:
     print("generating plots for: " + organism)
     infile = options.directory + "/" + organism + ppiExt
 
-    distanceMetrics['DSD 50LM'] = npyDir + "/dsd_50/" + organism + "_dsd.npy"
-    distanceMetrics['DSD 50LM (random)'] = npyDir + "/dsd_50_random/" + organism + "_dsd.npy"
-    distanceMetrics['DSD 200LM'] = npyDir + "/dsd_200/" + organism + "_dsd.npy"
-    distanceMetrics['DSD 200LM (random)'] = npyDir + "/dsd_200_random/" + organism + "_dsd.npy"
+    # distanceMetrics['DSD 50LM'] = npyDir + "/dsd_50/" + organism + "_dsd.npy"
+    # distanceMetrics['DSD 50LM (random)'] = npyDir + "/dsd_50_random/" + organism + "_dsd.npy"
+    # distanceMetrics['DSD 200LM'] = npyDir + "/dsd_200/" + organism + "_dsd.npy"
+    # distanceMetrics['DSD 200LM (random)'] = npyDir + "/dsd_200_random/" + organism + "_dsd.npy"
+    # distanceMetrics['DSD 500LM'] = npyDir + "/dsd_500/" + organism + "_dsd.npy"
+    # distanceMetrics['DSD 500LM (random)'] = npyDir + "/dsd_500_random/" + organism + "_dsd.npy"
+    # distanceMetrics['SPD'] = npyDir + "/" + organism + "_spd.npy"
+
+    # pyplot uses 7 built-in colors, so easier to stick to plotting 7 at a time.
+    distanceMetrics['DFD'] = npyDir + "/" + organism + "_dfd.npy"
     distanceMetrics['DSD 500LM'] = npyDir + "/dsd_500/" + organism + "_dsd.npy"
     distanceMetrics['DSD 500LM (random)'] = npyDir + "/dsd_500_random/" + organism + "_dsd.npy"
-    distanceMetrics['SPD'] = npyDir + "/" + organism + "_spd.npy"
-    distanceMetrics['DFD'] = npyDir + "/" + organism + "_dfd.npy"
+    distanceMetrics['DSD 500LM (eigen)'] = npyDir + "/dsd_500_eigen/" + organism + "_dsd.npy"
+    distanceMetrics['DSD 500LM (katz)'] = npyDir + "/dsd_500_katz/" + organism + "_dsd.npy"
+    distanceMetrics['DSD 500LM (closeness)'] = npyDir + "/dsd_500_closeness/" + organism + "_dsd.npy"
+    distanceMetrics['DSD 500LM (betweenness)'] = npyDir + "/dsd_500_betweenness/" + organism + "_dsd.npy"
 
     plt.figure(figNum)
     plotting.all_distance_pairs_density(infile, distanceMetrics=distanceMetrics, \

@@ -33,26 +33,37 @@ def setup_graph(infile):
     return G
 
 
-def get_LMset(G, nodeList, LMsetSize, randomize=False):
+def get_LMset(G, nodeList, LMsetSize, centralityFunc='degree', **kwargs):
     """
     given a graph, its corresponding nodelist and LM set size, computes and returns LM set.
     """
-    if randomize:
-        return np.random.choice(len(nodeList), LMsetSize, replace=False)
+    centralityFuncs = {'degree': nx.degree_centrality, \
+                       'closeness': nx.closeness_centrality, \
+                       'betweenness': nx.betweenness_centrality, \
+                       'eigenvector': nx.eigenvector_centrality_numpy, \
+                       'katz': nx.katz_centrality_numpy}
 
-    degree = np.array([G.degree(i) for i in nodeList],dtype='float')
+    f = centralityFunc
+    if type(f) == str:
+        if f == 'random':
+            return np.random.choice(len(nodeList), LMsetSize, replace=False)
+        else:
+            f = centralityFuncs[f]
 
-    # sort nodes by degree
-    degAscending = np.argsort(degree)
-    degDescending = degAscending[::-1]
+    centrality = f(G, **kwargs)
+    scores = np.array([centrality[node] for node in nodeList])
 
-    # use the highest degree nodes as landmarks in each case
-    # this is based on the assumption that high-degree nodes will be
-    # easiest to match using sequence or other side information
-    return degDescending[0:LMsetSize]
+    # sort nodes by score
+    scoreAscending = np.argsort(scores)
+    scoreDescending = scoreAscending[::-1]
+
+    return scoreDescending[0:LMsetSize]
 
 
-def dsd_matrix(G, nodeList, npyFile, LMsetSize=50, randomize_LMset=False):
+def dsd_matrix(G, nodeList, npyFile, LMsetSize=50, centralityFunc='degree', **kwargs):
+    """
+    any kwargs, if specified, will be passed into centrality function call.
+    """
     # if npy path not entered, or file does not exist, compute D
     if not npyFile or not os.path.isfile(npyFile):
         #
@@ -64,7 +75,7 @@ def dsd_matrix(G, nodeList, npyFile, LMsetSize=50, randomize_LMset=False):
         HEmatrix = dsd.hematrix(adjMatrix)
 
         # construct DSD
-        LMset = get_LMset(G, nodeList, LMsetSize, randomize=randomize_LMset)
+        LMset = get_LMset(G, nodeList, LMsetSize, centralityFunc, **kwargs)
         D = dsd.DSD(HEmatrix,LMset)
 
         if npyFile:
@@ -76,7 +87,6 @@ def dsd_matrix(G, nodeList, npyFile, LMsetSize=50, randomize_LMset=False):
     # otherwise just load and return it
     else:
         D = np.load(npyFile)
-
     return D
 
 

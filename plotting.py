@@ -217,7 +217,8 @@ def dsd_density_res(infile, calc, dsdMat=None, resMat=None, randomize=False, sp=
 
 ALL_DISTANCE_METRICS = {'DSD 50LM': None, 'DSD 50LM (random)' : None, 'DSD 500LM':None,\
                         'DSD 500LM (random)': None, 'DSD 200LM':None, 'DSD 200LM (random)': None,\
-                        'SPD': None, 'DFD': None}
+                        'SPD': None, 'DFD': None, 'DSD 500LM (eigen)': None, 'DSD 500LM (katz)': None,\
+                        'DSD 500LM (closeness)': None, 'DSD 500LM (betweenness)': None}
 
 def compute_all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METRICS, overlapMat=None, randomize=False):
     """
@@ -238,13 +239,18 @@ def compute_all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METR
     # mapping from metric to function that returns its matrix.
     # Assume each function can be called with identical parameters.
     metricMatrices = {'DSD 50LM' : expt.dsd_matrix, \
-                'DSD 50LM (random)' : lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize=50, randomize_LMset=True), \
+                'DSD 50LM (random)' : lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize=50, centralityFunc='random'), \
                 'SPD' : expt.sp_matrix, \
                 'DFD': expt.diffusion_matrix, \
                 'DSD 500LM': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize = 500),\
-                'DSD 500LM (random)': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize=500, randomize_LMset=True), \
+                'DSD 500LM (random)': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize=500, centralityFunc='random'), \
                 'DSD 200LM': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize = 200),\
-                'DSD 200LM (random)': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize=200, randomize_LMset=True)}
+                'DSD 200LM (random)': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize=200, centralityFunc='random'), \
+                'DSD 500LM (eigen)': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize=500, centralityFunc='eigenvector'), \
+                'DSD 500LM (katz)': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize=500, centralityFunc='katz'), \
+                'DSD 500LM (closeness)': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize=500, centralityFunc='closeness'), \
+                'DSD 500LM (betweenness)': lambda G, nodeList, npyFile: expt.dsd_matrix(G, nodeList, npyFile, LMsetSize=500, centralityFunc='betweenness')}
+
 
     # assuming GOfile is in same directory as ppi file, replace .ppi extension with NCBI_to_GO
     GOfile = infile[:-4]
@@ -278,6 +284,7 @@ def compute_all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METR
         metricDict[metric] = (DFlat, DSorted, overlapRatios)
 
     return metricDict
+
 
 def all_distance_pairs_density(infile, distanceMetrics=ALL_DISTANCE_METRICS, overlapMat=None, randomize=False):
     """
